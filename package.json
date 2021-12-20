@@ -1,0 +1,17 @@
+{
+  "name": "moppium-opencv.js",
+  "version": "1.0.0",
+  "description": "Using OpenCV.js In Node.js",
+  "main": "index.js",
+  "dependencies": {
+    "canvas": "^2.8.0",
+    "jsdom": "^19.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
