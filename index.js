@@ -18,8 +18,8 @@ function installDOM() {
 }
 
 /**
- * Loads opencv.js.
- *
+ * Loads OpenCV.JS.
+ * `cv` instance is available in global scope.
  * Installs HTML Canvas emulation to support `cv.imread()` and `cv.imshow`
  *
  * Mounts given local folder `localRootDir` in emscripten filesystem folder `rootDir`. By default it will mount the local current directory in emscripten `/work` directory. This means that `/work/foo.txt` will be resolved to the local file `./foo.txt`
@@ -64,25 +64,39 @@ exports.loadOpenCV = (rootDir = '/work', localRootDir = process.cwd()) => {
   });
 }
 
-exports.imread = async (imgPath) => {
+/**
+ * Load image from specific file
+ * @param {string} imagePath The path to the image file. Eg: path.join(__dirname, './image.png')
+ * @returns 
+ */
+exports.imread = async (imagePath) => {
   if (!cv.imread) {
     await loadOpenCV();
   }
-  const image = await loadImage(imgPath);
+  const image = await loadImage(imagePath);
   return cv.imread(image);
 }
 
-exports.imwrite = async (fn, src, opts = {}) => {
+/**
+ * Used to save an image to any storage device
+ * @param {string} outputPath The path to the file where the image will be saved
+ * @param {string} image The image source to be saved
+ * @param {Object} opts Options to save the image
+ * @param {string} opts.format The format of the image. Eg: 'image/png'
+ * @param {string} opts.flags The flags to save the image. Eg: 'w+'
+ * @returns 
+ */
+exports.imwrite = async (outputPath, image, opts = {}) => {
   if (!cv.imshow) {
     await loadOpenCV();
   }
   const format = opts.format || 'image/png';
   const flag = opts.flag || 'w+';
-  const canvas = createCanvas(src.size().width, src.size().height);
-  cv.imshow(canvas, src);
+  const canvas = createCanvas(image.size().width, image.size().height);
+  cv.imshow(canvas, image);
 
   return new Promise((resolve, reject) => {
-    writeFile(fn, canvas.toBuffer(format), { flag }, (err) => {
+    writeFile(outputPath, canvas.toBuffer(format), { flag }, (err) => {
       if (err) {
         return reject(err);
       }
